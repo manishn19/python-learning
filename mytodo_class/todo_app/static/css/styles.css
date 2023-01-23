@@ -1,0 +1,6 @@
+form label{display: block;}
+form textarea{width: 100%;}
+.todo-header { background-color: #000; color: #fff; padding: 10px; }
+.todo-header h1{font-size: 20px; margin-bottom: 0;}
+.todo-wrapper{border: 1px solid #ccc;}
+form.todo-form{padding: 10px; }
