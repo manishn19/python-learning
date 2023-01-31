@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views import generic, View
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render, get_object_or_404
 from .models import Todo
+from .forms import CommentForm
 
 
 class IndexView(View):
@@ -27,16 +29,30 @@ class TodoDetail(View):
 
     def get(self, request, id):
         todo = Todo.objects.filter(id=id)
-        return render(request, 'edit-todo.html', {'todo': todo})
+        form = CommentForm()
+        return render(request, 'edit-todo.html', {'todo': todo, 'form': form})
 
     def post(self, request, id):
         todo = Todo.objects.filter(pk=id)
-        if request.method == "POST":
+        form = CommentForm()
+        if 'todo-form' in request.POST:
             todo_status = request.POST.get('status', False)
             if todo_status == 'on':
                 todo_status = True
             todo.update(todo_status=todo_status)
-            return render(request, 'edit-todo.html', {'todo': todo, 'message': 'Todo Updated'})
+            messages.success(request, ('Todo Updated'))
+            # return redirect(f'/edit-todo/{id}/')
+            return redirect('home')
+        elif 'post-comment' in request.POST:
+            form = CommentForm(request.POST)
+            current_todo = Todo.objects.filter(pk=id).first()
+            current_user = User.objects.filter(id=request.user.id).first()
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.todo = current_todo
+                comment.commented_by = current_user
+                comment.save()
+            return redirect(f'/edit-todo/{id}/')
         else:
             return render(request, 'edit-todo.html', {'todo': todo, 'message': 'Something went wrong'})
 

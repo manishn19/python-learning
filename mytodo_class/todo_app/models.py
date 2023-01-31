@@ -16,3 +16,15 @@ class Todo(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    comment = models.TextField(blank=True)
+    commented_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='my_comments')
+    todo = models.ForeignKey(
+        Todo, on_delete=models.CASCADE, related_name='todo_comments')
+    created_by = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return self.comment

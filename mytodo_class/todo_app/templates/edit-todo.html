@@ -8,11 +8,12 @@
                 {% for detail in todo %}
                 <div class="todo-header">
                     <h1 class="todo-title">{{detail.title}}</h1>
+                    <span class="toto-header-status">{{detail.todo_status}}</span>
                 </div>
                 <form action="" method="POST" class="todo-form">{% csrf_token %}
-                    {% if message %}
+                    {% for message in messages %}
                         <div class="alert alert-success" role="alert">{{message}}</div>
-                    {% endif %}
+                    {% endfor %}
                     <fieldset disabled>
                         <div class="form-group">
                           <label for="title">Title</label>
@@ -27,20 +28,41 @@
                         <input class="form-check-input" type="checkbox" id="status" name="status" {% if detail.todo_status == True %}checked="checked"{% endif %}>
                         <label class="form-check-label" for="status"> Completed </label>
                       </div>
-                      <button type="submit" class="btn btn-primary">Update</button>
+                      <button type="submit" class="btn btn-primary" name="todo-form">Update</button>
                 </form>
-                <p class="pt-4 mb-3"><strong>Assign to:</strong> 
+                <p class="assign-users mb-3"><strong>Assign to:</strong> 
                     {% for mylist in detail.assign_to.all %}
                         <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
                     {% endfor %}
                 </p>
+                <div class="comment-list">
+                    <div class="comment-count">Total comments: {{detail.todo_comments.all|length}}</div>
+                    <div class="comments">
+                        {% for comment in detail.todo_comments.all %}
+                            <div class="comment-item">
+                                <span>{{comment.comment}}</span>
+                                <div class="comment-meta">
+                                    <span>{{comment.commented_by}}</span>
+                                    <span>{{comment.created_by}}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
                 {% endfor %}
+                {% if form %}
+                <form action="" method="POST" class="comment-form">
+                    {% csrf_token %}
+                    {{form}}
+                    <input type="submit" value="Post" name="post-comment">
+                </form>
+                {% endif %}
             </div>
             {% else %}
             <p>No todo found!</p>
             {% endif %}
-            <div class="todo-footer">
-                <a href="{% url 'home' %}"><< Back</a>
+            <div class="todo-footer my-3">
+                <a href="{% url 'home' %}" class="btn btn-outline-dark"><< Back</a>
             </div>
         </div>
     </div>

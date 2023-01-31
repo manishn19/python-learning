@@ -34,8 +34,7 @@
                                         <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
                                     {% endfor %}
                                 </p>
-                                <p><a href="javascript:void(0)" data-toggle="modal" data-target="#todoModal">Edit</a></p>
-                                <p><a href="{% url 'edit_todo' todo.id %}">Edit on Page</a></p>
+                                <p><a href="{% url 'edit_todo' todo.id %}">View Detail</a></p>
                             </div>
                         </div>
                         </div>
@@ -63,11 +62,11 @@
                                         <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
                                     {% endfor %}
                                 </p>
-                                <p><a href="javascript:void(0)" data-toggle="modal" data-target="#todoModal">Edit</a></p>
-                                <p><a href="{% url 'edit_todo' todo.id %}">Edit on Page</a></p>
+                                <p><a href="{% url 'edit_todo' todo.id %}">View Detail</a></p>
                             </div>
                         </div>
                         </div>
+                        
                         {% endif %}
                       {% endfor %}
                     </div>
