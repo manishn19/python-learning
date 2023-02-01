@@ -3,6 +3,8 @@ from django.views import generic, View
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render, get_object_or_404
 from .models import Todo
@@ -14,11 +16,26 @@ class IndexView(View):
     homepage for the app
     """
 
+    # def test_func(self):
+    #     """
+    #     validate the user only
+    #     """
+    #     return not self.request.user.is_superuser
+
     def get(self, request):
+        # redirect on login page
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        # Redirect the super user to dashboard
+        if self.request.user.is_superuser:
+            return redirect('dashboard')
+
         user = User.objects.get(id=request.user.id)
         todos = user.task.all()
         complete_task = user.task.filter(todo_status=True).count()
         progress_task = user.task.filter(todo_status=False).count()
+
         return render(request, 'index.html', {'todos': todos, 'completed_count': complete_task, 'inprogress_count': progress_task})
 
 
@@ -57,6 +74,22 @@ class TodoDetail(View):
             return render(request, 'edit-todo.html', {'todo': todo, 'message': 'Something went wrong'})
 
 
+class AdminDashboard(UserPassesTestMixin, View):
+    """
+    only admin can use this dashboard
+    """
+    login_url = '/login/'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get(self, request):
+        todos = Todo.objects.all()
+        complete_task = todos.filter(todo_status=True).count()
+        progress_task = todos.filter(todo_status=False).count()
+        return render(request, 'dashboard.html', {'todos': todos, 'completed': complete_task, 'progress': progress_task})
+
+
 class LoginView(View):
     """
     Login for the users
@@ -71,7 +104,10 @@ class LoginView(View):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect(reverse('home'))
+            if user.is_superuser:
+                return redirect('dashboard')
+            else:
+                return redirect(reverse('home'))
         else:
             msg = "User/Password does not match"
             return render(request, 'login.html', {'message': msg})
