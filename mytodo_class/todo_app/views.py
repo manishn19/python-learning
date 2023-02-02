@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render, get_object_or_404
 from .models import Todo
-from .forms import CommentForm
+from .forms import CommentForm, AddTodoForm
 
 
 class IndexView(View):
@@ -88,6 +88,30 @@ class AdminDashboard(UserPassesTestMixin, View):
         complete_task = todos.filter(todo_status=True).count()
         progress_task = todos.filter(todo_status=False).count()
         return render(request, 'dashboard.html', {'todos': todos, 'completed': complete_task, 'progress': progress_task})
+
+
+class AdminCreateTodo(UserPassesTestMixin, View):
+    """
+    Only admin can create new Todo
+    """
+    login_url = '/login/'
+    # template_name = 'create-todo.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get(self, request):
+        form = AddTodoForm()
+        return render(request, 'create-todo.html', {'form': form})
+
+    def post(self, request):
+        form = AddTodoForm(request.POST)
+        if form.is_valid:
+            todo = form.save(commit=False)
+            todo.created_by = self.request.user
+            todo.save()
+            form.save_m2m()
+            return render(request, 'create-todo.html', {'form': form, 'message': 'A Todo added!'})
 
 
 class LoginView(View):

@@ -1,9 +1,10 @@
+.gitignore
 PYTHON-GAME/
 employees/
 library-management/
 library-management - Copy/
 mysite/
-mytodo/
+mytodo_func/
 PyShop/
 python-learning/
 pythonProject/

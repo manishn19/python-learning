@@ -8,7 +8,7 @@
                 {% for detail in todo %}
                 <div class="todo-header">
                     <h1 class="todo-title">{{detail.title}}</h1>
-                    <span class="toto-header-status">{{detail.todo_status}}</span>
+                    <span class="toto-header-status">{% if detail.todo_status == False %}In-progress{% else %}Completed{% endif %}</span>
                 </div>
                 <form action="" method="POST" class="todo-form">{% csrf_token %}
                     {% for message in messages %}

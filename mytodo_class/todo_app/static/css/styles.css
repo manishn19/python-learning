@@ -1,3 +1,4 @@
+header .navbar-nav{flex: 1; justify-content: end;}
 form label{display: block;}
 form textarea{width: 100%;}
 .todo-header { background-color: #000; color: #fff; padding: 10px; display: flex;}
@@ -8,6 +9,10 @@ span.toto-header-status { flex: 1; text-align: right; font-size:14px;}
 form.comment-form { display: flex; }
 form.comment-form label { margin: 0 10px 0 0; }
 form.todo-form, form.comment-form{padding: 10px; }
+.card-title { display: flex; margin-bottom: 0;}
+.card-title span { flex: 1; text-align: left; }
+span.todo-metadata { display: flex; flex-direction: column; text-align: right; }
+.todo-metadata span{text-align: right;}
 .comment-form textarea{height: 30px; padding: 0 10px;}
 .comments { border-top: 2px solid; margin: 5px 0; }
 .comment-item { display: flex; padding: 10px 0; border-bottom: 1px dashed; }

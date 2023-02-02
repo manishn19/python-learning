@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 m-auto">
+          <div class="todo-wrapper">
+            <div class="todo-header">
+              <h1 class="todo-title">Create New Todo</h1>
+            </div>
+            {% if message %}
+              <div class="alert alert-success" role="alert">{{message}}</div>
+            {% endif %}
+            <form action="" method="post" class="todo-form">
+              {% csrf_token %}
+              <div class="form-group">
+                {{form.title|as_crispy_field}}
+              </div>
+              <div class="form-group">
+                {{form.description|as_crispy_field}}
+              </div>
+              <div class="form-group">
+                {{form.assign_to|as_crispy_field}}
+              </div>
+              <input type="submit" name="add-todo" class="btn btn-success" value="Add">
+            </form>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

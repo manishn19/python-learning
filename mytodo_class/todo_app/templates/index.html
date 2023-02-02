@@ -22,7 +22,7 @@
                         <div class="card-header" id="heading{{forloop.counter}}">
                             <h5 class="mb-0">
                             <p class="btn btn-link" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">
-                                <span>{{todo.title}}</span><span>{% if todo.todo_status == True %}Completed{% else %}In-progress{% endif %}</span></p>
+                                <span>{{todo.title}}</span></p>
                             </h5>
                         </div>
                     
@@ -50,7 +50,7 @@
                         <div class="card-header" id="heading{{forloop.counter}}">
                             <h5 class="mb-0">
                             <p class="btn btn-link" data-toggle="collapse" data-target="#completed{{forloop.counter}}" aria-expanded="" aria-controls="completed{{forloop.counter}}">
-                                <span>{{todo.title}}</span><span>{% if todo.todo_status == True %}Completed{% else %}In-progress{% endif %}</span></p>
+                                <span>{{todo.title}}</span></p>
                             </h5>
                         </div>
                     
