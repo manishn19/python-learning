@@ -72,7 +72,7 @@
                             <h5 class="mb-0">
                             <div class="btn btn-link card-title">
                               <div class="todo-title">
-                                <span data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">{{todo.title}}</span>
+                                <span data-toggle="collapse" data-target="#completed{{forloop.counter}}" aria-expanded="" aria-controls="completed{{forloop.counter}}">{{todo.title}}</span>
                               </div>
                               <div class="todo-metadata">
                                 <span class="todo-users">
@@ -113,7 +113,7 @@
                             <h5 class="mb-0">
                             <div class="btn btn-link card-title">
                               <div class="todo-title">
-                                <span data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">{{todo.title}}</span>
+                                <span data-toggle="collapse" data-target="#archive{{forloop.counter}}" aria-expanded="" aria-controls="archive{{forloop.counter}}">{{todo.title}}</span>
                                 <span class="hidden-row"><a href="{% url 'archive' todo.id %}">Restore</a> | <a href="{% url 'delete' todo.id %}">Permanent Delete</a></span>
                               </div>
                               <div class="todo-metadata">
@@ -128,7 +128,7 @@
                             </h5>
                         </div>
                     
-                        <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+                        <div id="archive{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
                             <div class="card-body">
                                 {{todo.description}}
                                 <p class="pt-4 mb-3"><strong>Assign to:</strong> 
