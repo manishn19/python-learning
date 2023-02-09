@@ -35,8 +35,9 @@ class IndexView(View):
         todos = user.task.all()
         complete_task = user.task.filter(todo_status=True).count()
         progress_task = user.task.filter(todo_status=False).count()
+        archive_task = user.task.filter(archive=True).count()
 
-        return render(request, 'index.html', {'todos': todos, 'completed_count': complete_task, 'inprogress_count': progress_task})
+        return render(request, 'index.html', {'todos': todos, 'completed_count': complete_task, 'inprogress_count': progress_task, 'archive_count': archive_task})
 
 
 class TodoDetail(View):
@@ -87,7 +88,8 @@ class AdminDashboard(UserPassesTestMixin, View):
         todos = Todo.objects.all()
         complete_task = todos.filter(todo_status=True).count()
         progress_task = todos.filter(todo_status=False).count()
-        return render(request, 'dashboard.html', {'todos': todos, 'completed': complete_task, 'progress': progress_task})
+        archive_task = todos.filter(archive=True).count()
+        return render(request, 'dashboard.html', {'todos': todos, 'completed': complete_task, 'progress': progress_task, 'archive_count': archive_task})
 
 
 class AdminCreateTodo(UserPassesTestMixin, View):
@@ -112,6 +114,41 @@ class AdminCreateTodo(UserPassesTestMixin, View):
             todo.save()
             form.save_m2m()
             return render(request, 'create-todo.html', {'form': form, 'message': 'A Todo added!'})
+
+
+def todo_archive(request, id):
+    todo = Todo.objects.get(id=id)
+    if todo.archive == True:
+        todo.archive = False
+    else:
+        todo.archive = True
+    todo.save()
+    return redirect('dashboard')
+
+
+def todo_delete(request, id):
+    todo = Todo.objects.get(id=id)
+    todo.delete()
+    return redirect('dashboard')
+
+
+class TodoArchive(UserPassesTestMixin, View):
+    """
+    Archive the todo
+    """
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get(self, request, id):
+        todo = Todo.objects.get(id=id)
+        return redirect(request, 'archive-todo.html', {'todo': todo})
+
+    def post(self, request, id):
+        todo = Todo.objects.get(pk=id)
+        todo.archive = True
+        todo.save()
+        return redirect(request, 'dashboard.html')
 
 
 class LoginView(View):

@@ -9,28 +9,40 @@
                   <li class="nav-item">
                     <a class="nav-link active" id="inProgress-tab" data-toggle="tab" href="#inProgress" role="tab" aria-controls="inProgress" aria-selected="true">In-progress ({{ progress }})</a>
                   </li>
+                  {% if completed %}
                   <li class="nav-item">
                     <a class="nav-link" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="false">Completed ({{ completed }})</a>
                   </li>
+                  {% endif %}
+                  {% if archive_count %}
+                  <li class="nav-item">
+                    <a class="nav-link" id="archive-tab" data-toggle="tab" href="#archive" role="tab" aria-controls="archive" aria-selected="false">Trash ({{ archive_count }})</a>
+                  </li>
+                  {% endif %}
                 </ul>
                 <div class="tab-content" id="tabContent">
+                  <!-- In-Progress tasks -->
                   <div class="tab-pane fade show active" id="inProgress" role="tabpanel" aria-labelledby="inProgress-tab">
                     <div id="accordion">
                       {% for todo in todos %}
-                        {% if todo.todo_status == False %}
+                        {% if todo.todo_status == False and todo.archive == False %}
                         <div class="card">
                         <div class="card-header" id="heading{{forloop.counter}}">
                             <h5 class="mb-0">
-                            <p class="btn btn-link card-title" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">
-                              <span>{{todo.title}}</span>
-                              <span class="todo-metadata">
+                            <div class="btn btn-link card-title">
+                              <div class="todo-title">
+                                <span data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">{{todo.title}}</span>
+                                <span class="hidden-row"><a href="{% url 'archive' todo.id %}">Archive</a></span>
+                              </div>
+                              <div class="todo-metadata">
                                 <span class="todo-users">
                                   {% for mylist in todo.assign_to.all %}
                                       <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
                                   {% endfor %}
                                 </span>
                                 <span class="todo-date">{{todo.created_on}}</span>
-                              </span></p>
+                              </div>
+                            </div>
                             </h5>
                         </div>
                     
@@ -50,23 +62,27 @@
                       {% endfor %}
                     </div>
                   </div>
+                  <!-- Completed Tasks -->
                   <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
                     <div id="accordion-comp">
                       {% for todo in todos %}
-                        {% if todo.todo_status == True %}
+                        {% if todo.todo_status == True and todo.archive == False %}
                         <div class="card">
-                        <div class="card-header" id="heading{{forloop.counter}}">
+                          <div class="card-header" id="heading{{forloop.counter}}">
                             <h5 class="mb-0">
-                            <p class="btn btn-link card-title" data-toggle="collapse" data-target="#completed{{forloop.counter}}" aria-expanded="" aria-controls="completed{{forloop.counter}}">
-                                <span>{{todo.title}}</span>
-                                <span class="todo-metadata">
-                                  <span class="todo-users">
-                                    {% for mylist in todo.assign_to.all %}
-                                        <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
-                                    {% endfor %}
-                                  </span>
-                                  <span class="todo-date">{{todo.created_on}}</span>
-                                </span></p>
+                            <div class="btn btn-link card-title">
+                              <div class="todo-title">
+                                <span data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">{{todo.title}}</span>
+                              </div>
+                              <div class="todo-metadata">
+                                <span class="todo-users">
+                                  {% for mylist in todo.assign_to.all %}
+                                      <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
+                                  {% endfor %}
+                                </span>
+                                <span class="todo-date">{{todo.created_on}}</span>
+                              </div>
+                            </div>
                             </h5>
                         </div>
                     
@@ -83,6 +99,47 @@
                         </div>
                         </div>
                         
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <!-- Archive tasks -->
+                  <div class="tab-pane fade" id="archive" role="tabpanel" aria-labelledby="archive-tab">
+                    <div id="accordion">
+                      {% for todo in todos %}
+                        {% if todo.archive == True %}
+                        <div class="card">
+                        <div class="card-header" id="heading{{forloop.counter}}">
+                            <h5 class="mb-0">
+                            <div class="btn btn-link card-title">
+                              <div class="todo-title">
+                                <span data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">{{todo.title}}</span>
+                                <span class="hidden-row"><a href="{% url 'archive' todo.id %}">Restore</a> | <a href="{% url 'delete' todo.id %}">Permanent Delete</a></span>
+                              </div>
+                              <div class="todo-metadata">
+                                <span class="todo-users">
+                                  {% for mylist in todo.assign_to.all %}
+                                      <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
+                                  {% endfor %}
+                                </span>
+                                <span class="todo-date">{{todo.created_on}}</span>
+                              </div>
+                            </div>
+                            </h5>
+                        </div>
+                    
+                        <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+                            <div class="card-body">
+                                {{todo.description}}
+                                <p class="pt-4 mb-3"><strong>Assign to:</strong> 
+                                    {% for mylist in todo.assign_to.all %}
+                                        <span>{{ mylist }}{% if not forloop.last %},{% endif %}</span>
+                                    {% endfor %}
+                                </p>
+                                <p><a href="{% url 'edit_todo' todo.id %}">View Detail</a></p>
+                            </div>
+                        </div>
+                        </div>
                         {% endif %}
                       {% endfor %}
                     </div>

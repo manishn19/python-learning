@@ -13,6 +13,7 @@ class Todo(models.Model):
     created_on = models.DateTimeField(
         auto_now=False, auto_now_add=True, blank=True)
     updated_on = models.DateTimeField(auto_now=True)
+    archive = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.title

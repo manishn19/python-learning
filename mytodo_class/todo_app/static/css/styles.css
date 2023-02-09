@@ -10,8 +10,10 @@ form.comment-form { display: flex; }
 form.comment-form label { margin: 0 10px 0 0; }
 form.todo-form, form.comment-form{padding: 10px; }
 .card-title { display: flex; margin-bottom: 0;}
-.card-title span { flex: 1; text-align: left; }
-span.todo-metadata { display: flex; flex-direction: column; text-align: right; }
+.card-title div { flex: 1; text-align: left; }
+#tabContent .btn-link:hover{text-decoration: none;}
+.todo-title .hidden-row { display: block; font-size: 14px;}
+.todo-metadata { display: flex; flex-direction: column; text-align: right; }
 .todo-metadata span{text-align: right;}
 .comment-form textarea{height: 30px; padding: 0 10px;}
 .comments { border-top: 2px solid; margin: 5px 0; }
