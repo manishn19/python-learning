@@ -28,8 +28,7 @@
                         {% if todo.todo_status == False and todo.archive == False %}
                         <div class="card">
                         <div class="card-header" id="heading{{forloop.counter}}">
-                            <h5 class="mb-0">
-                            <div class="btn btn-link card-title">
+                            <div class="card-title">
                               <div class="todo-title">
                                 <span data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="" aria-controls="collapse{{forloop.counter}}">{{todo.title}}</span>
                                 <span class="hidden-row"><a href="{% url 'archive' todo.id %}">Archive</a></span>
@@ -43,7 +42,6 @@
                                 <span class="todo-date">{{todo.created_on}}</span>
                               </div>
                             </div>
-                            </h5>
                         </div>
                     
                         <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
@@ -69,8 +67,7 @@
                         {% if todo.todo_status == True and todo.archive == False %}
                         <div class="card">
                           <div class="card-header" id="heading{{forloop.counter}}">
-                            <h5 class="mb-0">
-                            <div class="btn btn-link card-title">
+                            <div class="card-title">
                               <div class="todo-title">
                                 <span data-toggle="collapse" data-target="#completed{{forloop.counter}}" aria-expanded="" aria-controls="completed{{forloop.counter}}">{{todo.title}}</span>
                               </div>
@@ -83,7 +80,6 @@
                                 <span class="todo-date">{{todo.created_on}}</span>
                               </div>
                             </div>
-                            </h5>
                         </div>
                     
                         <div id="completed{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion-comp">
@@ -110,8 +106,7 @@
                         {% if todo.archive == True %}
                         <div class="card">
                         <div class="card-header" id="heading{{forloop.counter}}">
-                            <h5 class="mb-0">
-                            <div class="btn btn-link card-title">
+                            <div class="card-title">
                               <div class="todo-title">
                                 <span data-toggle="collapse" data-target="#archive{{forloop.counter}}" aria-expanded="" aria-controls="archive{{forloop.counter}}">{{todo.title}}</span>
                                 <span class="hidden-row"><a href="{% url 'archive' todo.id %}">Restore</a> | <a href="{% url 'delete' todo.id %}">Permanent Delete</a></span>
@@ -125,7 +120,6 @@
                                 <span class="todo-date">{{todo.created_on}}</span>
                               </div>
                             </div>
-                            </h5>
                         </div>
                     
                         <div id="archive{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">

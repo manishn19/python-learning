@@ -45,22 +45,59 @@ class TodoDetail(View):
     edit and get the todo detail
     """
 
+    def update_todo_users(self, existing_user, new_user, todo):
+        list_user = []
+        for uid in existing_user:
+            list_user.append(uid.id)
+
+        if new_user == list_user:
+            return False
+        else:
+            todo = todo.first()
+            # remove all the previous users from current todo
+            for user_id in existing_user:
+                todo.assign_to.remove(user_id)
+
+            # assign new users to current todo
+            for user_id in new_user:
+                todo.assign_to.add(user_id)
+
+            return True
+
     def get(self, request, id):
         todo = Todo.objects.filter(id=id)
+        users = User.objects.filter(is_superuser=False)
         form = CommentForm()
-        return render(request, 'edit-todo.html', {'todo': todo, 'form': form})
+        return render(request, 'edit-todo.html', {'todo': todo, 'form': form, 'users': users})
 
     def post(self, request, id):
         todo = Todo.objects.filter(pk=id)
+        existing_user = todo.first().assign_to.all()
+        assigned_user = []
         form = CommentForm()
         if 'todo-form' in request.POST:
             todo_status = request.POST.get('status', False)
             if todo_status == 'on':
                 todo_status = True
+            # save data from Admin only
+            if self.request.user.is_superuser:
+                todo.title = request.POST.get('title')
+                todo.description = request.POST.get('description')
+                # get all selected user
+                assigned = request.POST.getlist('assign_to')
+                for userid in assigned:
+                    assigned_user.append(int(userid))
+
+                # call the function for updating/removing users from this todo
+                user_updates = self.update_todo_users(
+                    existing_user, assigned_user, todo)
+                todo.update(title=todo.title, description=todo.description)
+
             todo.update(todo_status=todo_status)
-            messages.success(request, ('Todo Updated'))
-            # return redirect(f'/edit-todo/{id}/')
-            return redirect('home')
+            messages.success(
+                request, (f'Todo Updated'))
+            return redirect(f'/edit-todo/{id}/')
+            # return redirect('home')
         elif 'post-comment' in request.POST:
             form = CommentForm(request.POST)
             current_todo = Todo.objects.filter(pk=id).first()

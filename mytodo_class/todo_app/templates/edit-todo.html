@@ -14,20 +14,34 @@
                     {% for message in messages %}
                         <div class="alert alert-success" role="alert">{{message}}</div>
                     {% endfor %}
-                    <fieldset disabled>
+                    <fieldset {% if not user.is_superuser %}disabled{% endif %}>
                         <div class="form-group">
                           <label for="title">Title</label>
                           <input type="text" name="title" id="title" class="form-control" value="{{detail.title}}">
                         </div>
                         <div class="form-group">
                             <label for="title">Description</label>
-                            <textarea name="description" id="description">{{detail.description}}</textarea>
+                            <textarea class="form-control" name="description" id="description">{{detail.description}}</textarea>
                           </div>
                       </fieldset>
                       <div class="form-check mb-4">
                         <input class="form-check-input" type="checkbox" id="status" name="status" {% if detail.todo_status == True %}checked="checked"{% endif %}>
                         <label class="form-check-label" for="status"> Completed </label>
                       </div>
+                      {% if user.is_superuser %}
+                      <div class="form-group"> 
+                        <label for="assign_to" class=""> Assign to </label> 
+                        <select name="assign_to" class="selectmultiple form-control" id="assign_to" multiple=""> 
+                            {% for user in users %}
+                                {% if user in detail.assign_to.all %}
+                                    <option value="{{user.id}}" selected>{{user.username}}</option> 
+                                {% else %}
+                                    <option value="{{user.id}}">{{user.username}}</option> 
+                                {% endif %}
+                            {% endfor %}
+                        </select> 
+                        </div>
+                        {% endif %}
                       <button type="submit" class="btn btn-primary" name="todo-form">Update</button>
                 </form>
                 <p class="assign-users mb-3"><strong>Assign to:</strong> 
